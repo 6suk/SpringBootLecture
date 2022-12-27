@@ -33,6 +33,23 @@ public class UserServiceImpl implements UserService{
 		u.setPwd(Bpwd);
 		userDao.insert(u);
 	}
+
+	@Override
+	public void update(User u) {
+		if(u.getPwd() != null || !u.getPwd().isEmpty()) {
+			String Bpwd = BCrypt.hashpw(u.getPwd(), BCrypt.gensalt());
+			u.setPwd(Bpwd);
+		}else {
+			User user = userDao.get(u.getUid());
+			u.setPwd(user.getPwd());
+		}
+		userDao.update(u);
+	}
+
+	@Override
+	public void delete(String uid) {
+		userDao.delete(uid);
+	}
 	
 	
 }

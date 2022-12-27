@@ -3,10 +3,10 @@ pageEncoding="UTF-8" import = "java.util.*"%>
 <%@ taglib prefix = "c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%!	
-private static final String LIST = "/user/list", LIST_VIEW = "/ch14/users3/list.jsp",
-LOGIN = "/ch14/users3/login", LOGIN_VIEW = "/ch14/users3/login.jsp", LOGOUT = "/ch14/users3/logout",
-REG = "/user/register", REG_VIEW = "/ch14/users3/register.jsp", UPDATE = "/ch14/users3/update",
-UPDATE_VIEW = "/ch14/users3/update.jsp", DEL = "/ch14/users3/delete", MSG = "/ch14/users3/msg.jsp";
+private static final String LIST = "/user/list", LIST_VIEW = "/user/list.jsp",
+LOGIN = "/user/login", LOGIN_VIEW = "/user/login.jsp", LOGOUT = "/user/logout",
+REG = "/user/register", REG_VIEW = "/user/register.jsp", UPDATE = "/user/update",
+UPDATE_VIEW = "/user/update.jsp", DEL = "/user/delete", MSG = "/user/msg.jsp";
 %>
 
 <!DOCTYPE html>
@@ -146,26 +146,26 @@ UPDATE_VIEW = "/ch14/users3/update.jsp", DEL = "/ch14/users3/delete", MSG = "/ch
             <td>${u.regDate}</td>
             <td>
             <%-- 수정 버튼 시작 --%>
-			<c:choose>
+<%-- 			<c:choose>
 			<c:when test="${empty uid or not(uid eq u.uid)}">
               <button class="subbtn" type="button" disabled >수정</button>				
 			</c:when>
-			<c:otherwise>
+			<c:otherwise> --%>
               <button class="subbtn" type="button"
-              	onclick="location.href='<%= UPDATE %>?uid=${u.uid}'">수정</button>				
-			</c:otherwise>
-			</c:choose>
+              	onclick="location.href='<%= UPDATE %>/${u.uid}'">수정</button>				
+<%-- 			</c:otherwise>
+			</c:choose> --%>
 			
 			<%-- 삭제 버튼 시작 --%>
-			<c:choose>
+<%-- 			<c:choose>
 			<c:when test="${empty uid or not(uid eq 'admin')}">
               <button class="subbtn" type="button" disabled >삭제</button>				
 			</c:when>
-			<c:otherwise>
+			<c:otherwise> --%>
               <button class="subbtn" type="button"
-              	onclick="location.href='<%= DEL %>?uid=${u.uid}'">삭제</button>				
-			</c:otherwise>
-			</c:choose>  
+              	onclick="location.href='<%= DEL %>/${u.uid}'">삭제</button>				
+<%-- 			</c:otherwise>
+			</c:choose>   --%>
             </td>
           </tr>          
           </c:forEach>

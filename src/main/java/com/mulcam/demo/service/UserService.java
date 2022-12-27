@@ -11,5 +11,8 @@ public interface UserService {
 	User get(String uid);
 	
 	void register(User u);
-
+	
+	void update(User u);
+	
+	void delete(String uid);
 }

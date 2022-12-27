@@ -3,11 +3,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%!	
-private static final String LIST = "/user/list", LIST_VIEW = "/ch14/users3/list.jsp",
-LOGIN = "/ch14/users3/login", LOGIN_VIEW = "/ch14/users3/login.jsp", LOGOUT = "/ch14/users3/logout",
-REG = "/user/register", REG_VIEW = "/ch14/users3/register.jsp", UPDATE = "/ch14/users3/update",
-UPDATE_VIEW = "/ch14/users3/update.jsp", DEL = "/ch14/users3/delete", MSG = "/ch14/users3/msg.jsp";
-%>
+private static final String LIST = "/user/list", LIST_VIEW = "/user/list.jsp",
+LOGIN = "/user/login", LOGIN_VIEW = "/user/login.jsp", LOGOUT = "/user/logout",
+REG = "/user/register", REG_VIEW = "/user/register.jsp", UPDATE = "/user/update",
+UPDATE_VIEW = "/user/update.jsp", DEL = "/user/delete", MSG = "/user/msg.jsp";
+%>>
 
 <!DOCTYPE html>
 <html>

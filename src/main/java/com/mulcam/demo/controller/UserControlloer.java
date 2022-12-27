@@ -56,4 +56,49 @@ public class UserControlloer {
 			return "redirect:/user/list";
 		}
 	}
+	
+	@GetMapping("/update/{uid}")
+	public String updateForm(@PathVariable String uid, Model model) {
+		User user = service.get(uid);
+		model.addAttribute("user", user);
+		return "user/update";
+	}
+	
+	
+	@PostMapping("/update")
+	public String update(HttpServletRequest req) {
+		String uid = req.getParameter("uid");
+		String pwdbox[] = req.getParameterValues("pwd");
+		String uname = req.getParameter("name");
+		String email = req.getParameter("email");
+		User u;
+		
+		if (email.isEmpty())
+			u = new User(uid, pwdbox[0], uname);
+		else
+			u = new User(uid, pwdbox[0], uname, email);
+		
+		if (!pwdbox[0].equals(pwdbox[1])) {
+			System.out.println("비밀번호 오류");
+			return "redirect:/user/list";
+		} else {
+			u = new User(uid, pwdbox[0], uname, email);
+			service.update(u);
+			System.out.println("정보 수정 완료");
+			return "redirect:/user/list";
+		}
+	}
+	
+//	@GetMapping("/delete/{uid}")
+//	public String delete(@PathVariable String uid) {
+//		service.delete(uid);
+//		return "redirect:/user/list";
+//	}
+	
+	@GetMapping("/delete/{uid}")
+	public String delete(@PathVariable String uid) {
+		service.delete(uid);
+		return "redirect:/user/list";
+	}
+	
 }
