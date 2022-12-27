@@ -7,7 +7,7 @@ private static final String LIST = "/user/list", LIST_VIEW = "/user/list.jsp",
 LOGIN = "/user/login", LOGIN_VIEW = "/user/login.jsp", LOGOUT = "/user/logout",
 REG = "/user/register", REG_VIEW = "/user/register.jsp", UPDATE = "/user/update",
 UPDATE_VIEW = "/user/update.jsp", DEL = "/user/delete", MSG = "/user/msg.jsp";
-%>>
+%>
 
 <!DOCTYPE html>
 <html>

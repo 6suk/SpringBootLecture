@@ -5,6 +5,9 @@ import java.util.List;
 import com.mulcam.demo.entity.User;
 
 public interface UserService {
+	public static final int CORRENT_LOGIN = 0;
+	public static final int WRONG_PWD = 1;
+	public static final int NULL_UID = 2;
 
 	List<User> getList();
 
@@ -15,4 +18,7 @@ public interface UserService {
 	void update(User u);
 	
 	void delete(String uid);
+
+	int login(String uid, String pwd);
+	
 }

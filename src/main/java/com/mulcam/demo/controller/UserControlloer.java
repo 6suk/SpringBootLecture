@@ -2,8 +2,11 @@ package com.mulcam.demo.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.mulcam.demo.entity.User;
 import com.mulcam.demo.service.UserService;
+import com.mulcam.demo.session.UserSession;
 
 @Controller
 @RequestMapping("/user")
@@ -56,15 +60,14 @@ public class UserControlloer {
 			return "redirect:/user/list";
 		}
 	}
-	
+
 	@GetMapping("/update/{uid}")
 	public String updateForm(@PathVariable String uid, Model model) {
 		User user = service.get(uid);
 		model.addAttribute("user", user);
 		return "user/update";
 	}
-	
-	
+
 	@PostMapping("/update")
 	public String update(HttpServletRequest req) {
 		String uid = req.getParameter("uid");
@@ -72,12 +75,12 @@ public class UserControlloer {
 		String uname = req.getParameter("name");
 		String email = req.getParameter("email");
 		User u;
-		
+
 		if (email.isEmpty())
 			u = new User(uid, pwdbox[0], uname);
 		else
 			u = new User(uid, pwdbox[0], uname, email);
-		
+
 		if (!pwdbox[0].equals(pwdbox[1])) {
 			System.out.println("비밀번호 오류");
 			return "redirect:/user/list";
@@ -88,17 +91,54 @@ public class UserControlloer {
 			return "redirect:/user/list";
 		}
 	}
-	
+
 //	@GetMapping("/delete/{uid}")
 //	public String delete(@PathVariable String uid) {
 //		service.delete(uid);
 //		return "redirect:/user/list";
 //	}
-	
+
 	@GetMapping("/delete/{uid}")
 	public String delete(@PathVariable String uid) {
 		service.delete(uid);
 		return "redirect:/user/list";
 	}
+
+	@GetMapping("/login")
+	public String loginForm() {
+		return "user/login";
+	}
+
+	@PostMapping("/login")
+	public String login(HttpServletRequest req, Model model) {
+		String uid = req.getParameter("uid");
+		String pwd = req.getParameter("pwd");
+		int result = service.login(uid, pwd);
+
+		switch (result) {
+		case UserService.CORRENT_LOGIN:
+			User u = service.get(uid);
+			HttpSession ss = req.getSession();
+			ss.setAttribute("uid", u.getUid());
+			ss.setAttribute("uname", u.getUname());
+			return "redirect:/user/list";
+
+		case UserService.WRONG_PWD:
+			return "/user/login";
+
+		case UserService.NULL_UID:
+			return "/user/login";
+
+		default:
+			return "";
+		}
+	}
 	
+	@RequestMapping("/logout")
+	public String logout(HttpServletRequest req) {
+		HttpSession ss =  req.getSession();
+		ss.invalidate();
+		return "redirect:/user/list";
+	}
+
 }
