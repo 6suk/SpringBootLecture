@@ -5,7 +5,7 @@ import java.util.List;
 import com.mulcam.demo.entity.User;
 
 public interface UserService {
-	public static final int CORRENT_LOGIN = 0;
+	public static final int CORRECT = 0;
 	public static final int WRONG_PWD = 1;
 	public static final int NULL_UID = 2;
 
@@ -15,7 +15,7 @@ public interface UserService {
 	
 	void register(User u);
 	
-	void update(User u);
+	int update(User u);
 	
 	void delete(String uid);
 

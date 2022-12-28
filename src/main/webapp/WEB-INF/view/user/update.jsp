@@ -147,7 +147,7 @@ UPDATE_VIEW = "/user/update.jsp", DEL = "/user/delete", MSG = "/user/msg.jsp";
               <td>
                 <input
                   type="password"
-                  name="pwd"
+                  name="pwds"
                   placeholder="*패스워드"
                   maxlength="60"
                 />
@@ -158,7 +158,7 @@ UPDATE_VIEW = "/user/update.jsp", DEL = "/user/delete", MSG = "/user/msg.jsp";
               <td>
                 <input
                   type="password"
-                  name="pwd"
+                  name="pwds"
                   placeholder="*패스워드 확인"
                   maxlength="60"
                 />
@@ -169,7 +169,7 @@ UPDATE_VIEW = "/user/update.jsp", DEL = "/user/delete", MSG = "/user/msg.jsp";
               <td>
                 <input
                   type="text"
-                  name="name"
+                  name="uname"
                   placeholder="*이름"
                   maxlength="10"
                   required

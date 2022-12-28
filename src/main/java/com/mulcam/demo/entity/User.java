@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class User {
 	private String uid;
 	private String pwd;
+	private String pwds[];
 	private String uname;
 	private String email;
 	private LocalDate regDate;
@@ -94,6 +95,14 @@ public class User {
 
 	public void setIsDel(int isDel) {
 		this.isDel = isDel;
+	}
+
+	public String[] getPwds() {
+		return pwds;
+	}
+
+	public void setPwds(String[] pwds) {
+		this.pwds = pwds;
 	}
 
 	@Override

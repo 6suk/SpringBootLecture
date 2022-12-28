@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mulcam.demo.entity.User;
 import com.mulcam.demo.service.UserService;
@@ -68,26 +70,44 @@ public class UserControlloer {
 		return "user/update";
 	}
 
+//	@PostMapping("/update")
+//	public String update(HttpServletRequest req) {
+//		String uid = req.getParameter("uid");
+//		String pwdbox[] = req.getParameterValues("pwd");
+//		String uname = req.getParameter("name");
+//		String email = req.getParameter("email");
+//		User u;
+//
+//		if (email.isEmpty())
+//			u = new User(uid, pwdbox[0], uname);
+//		else
+//			u = new User(uid, pwdbox[0], uname, email);
+//
+//		if (!pwdbox[0].equals(pwdbox[1])) {
+//			System.out.println("비밀번호 오류");
+//			return "redirect:/user/list";
+//		} else {
+//			u = new User(uid, pwdbox[0], uname, email);
+//			service.update(u);
+//			System.out.println("정보 수정 완료");
+//			return "redirect:/user/list";
+//		}
+//	}
+	
 	@PostMapping("/update")
-	public String update(HttpServletRequest req) {
-		String uid = req.getParameter("uid");
-		String pwdbox[] = req.getParameterValues("pwd");
-		String uname = req.getParameter("name");
-		String email = req.getParameter("email");
-		User u;
-
-		if (email.isEmpty())
-			u = new User(uid, pwdbox[0], uname);
-		else
-			u = new User(uid, pwdbox[0], uname, email);
-
-		if (!pwdbox[0].equals(pwdbox[1])) {
+	public String update(@ModelAttribute User u) {
+		int check = service.update(u);
+		
+		switch (check) {
+		case UserService.CORRECT:
+			System.out.println("정보 수정 완료");
+			return "redirect:/user/list";
+			
+		case UserService.WRONG_PWD:
 			System.out.println("비밀번호 오류");
 			return "redirect:/user/list";
-		} else {
-			u = new User(uid, pwdbox[0], uname, email);
-			service.update(u);
-			System.out.println("정보 수정 완료");
+
+		default:
 			return "redirect:/user/list";
 		}
 	}
@@ -116,7 +136,7 @@ public class UserControlloer {
 		int result = service.login(uid, pwd);
 
 		switch (result) {
-		case UserService.CORRENT_LOGIN:
+		case UserService.CORRECT:
 			User u = service.get(uid);
 			HttpSession ss = req.getSession();
 			ss.setAttribute("uid", u.getUid());
