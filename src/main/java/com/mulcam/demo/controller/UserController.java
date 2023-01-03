@@ -23,7 +23,7 @@ import com.mulcam.demo.session.UserSession;
 
 @Controller
 @RequestMapping("/user")
-public class UserControlloer {
+public class UserController {
 
 	@Autowired
 	private UserService service;
