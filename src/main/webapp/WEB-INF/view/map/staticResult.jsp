@@ -12,7 +12,7 @@
 <body style="margin: 40px;">
 	<h3>Naver Static Map 결과</h3>
 	<hr>
-	<img src="${url }" width="60%"><br>
+	<img src="${url }"><br>
 	<a href="/map/staticMap">되돌아가기</a>
 </body>
 </html>

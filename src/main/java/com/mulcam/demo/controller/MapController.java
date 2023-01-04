@@ -138,8 +138,8 @@ public class MapController {
 
 	@RequestMapping("/hotplaces")
 	public String hotPlaces() throws Exception {
-		String[] hotPlaces = { "광진구청", "건국대학교", "세종대학교", "워커힐호텔" };
-		String fileName = "c:/Temp/광진구명소.csv";
+		String[] hotPlaces = { "광주 패밀리 랜드", "무등산 국립공원", "광주시립미술관", "전남 대학교", "펭귄마을" };
+		String fileName = "d:/SpringTemp/광주명소.csv";
 		List<List<String>> allList = new ArrayList<>();
 
 		for (String p : hotPlaces) {
@@ -159,8 +159,10 @@ public class MapController {
 	@RequestMapping("/hotPlacesResult")
 	public String hotPlacesResult(Model model) {
 		StringBuilder sb = new StringBuilder();
-		List<List<String>> dataList = cu.readCsv("c:/Temp/광진구명소.csv", "\t");
+		List<List<String>> dataList = cu.readCsv("d:/SpringTemp/광주명소.csv", "\t");
 		double lngSum = 0.0, latSum = 0.0;
+		int i = 0;
+		String[] color = { "red", "blue", "green", "purple", "yellow" };
 
 		/** Marker */
 		for (List<String> list : dataList) {
@@ -168,7 +170,9 @@ public class MapController {
 			double lat = Double.parseDouble(list.get(3));
 			lngSum += lng;
 			latSum += lat;
-			sb.append("&markers=type:t|size:tiny|pos:").append(lng + " " + lat).append("|label:").append(list.get(0));
+			sb.append("&markers=type:t|size:tiny|pos:").append(lng + " " + lat).append("|color:" + color[i])
+					.append("|label:").append(list.get(0));
+			i++;
 		}
 		String marker = sb.toString();
 		sb.setLength(0);
@@ -177,8 +181,8 @@ public class MapController {
 		double latCenter = latSum / dataList.size();
 
 		sb.append("https://naveropenapi.apigw.ntruss.com/map-static/v2/raster").append("?w=" + 600).append("&h=" + 400)
-				.append("&center=" + lngCenter + "," + latCenter).append("&level=" + 12).append("&scale=" + 2)
-				.append(marker).append("&X-NCP-APIGW-API-KEY-ID=" + accessId)
+				.append("&center=" + lngCenter + "," + latCenter).append("&level=" + 10).append("&scale=" + 2)
+				.append("&format=png").append(marker).append("&X-NCP-APIGW-API-KEY-ID=" + accessId)
 				.append("&X-NCP-APIGW-API-KEY=" + secretKey);
 
 		model.addAttribute("url", sb.toString());
