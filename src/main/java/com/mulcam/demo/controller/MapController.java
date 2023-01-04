@@ -5,10 +5,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,20 +22,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mulcam.demo.entity.StaticMap;
+import com.mulcam.demo.service.CsvUtil;
+import com.mulcam.demo.service.MapUtil;
 
 @Controller
 @RequestMapping("/map")
 public class MapController {
-
+	
 	@Value("${naver.accessId}")
 	private String accessId;
 	@Value("${naver.secretKey}")
 	private String secretKey;
-
+	
 	@GetMapping("/staticMap")
 	public String staticMapForm() {
 		return "map/staticForm";
 	}
+	
+	@Autowired
+	MapUtil mu = new MapUtil();
+	
+	@Autowired
+	CsvUtil cu = new CsvUtil();
 
 	@PostMapping("/staticMap")
 	public String staticMap(StaticMap map, Model model) {
@@ -124,5 +135,28 @@ public class MapController {
 		
 		return lng + " / " + lat;
 	}
+	
+	@GetMapping("/hp")
+	public String hotPlaces() throws Exception{
+		String[] hotPlaces = { "광진구청", "건국대학교", "세종대학교", "워커힐호텔" };
+		String fileName = "c:/Temp/광진구명소.csv";
+		
+		List<List<String>> allList = new ArrayList<>();
+		
+		for(String p : hotPlaces) {
+			List<String> oneList = new ArrayList<>();
+			String roadAddr = mu.getAddr(p);
+			System.out.println(roadAddr);
+			List<String> geocode = mu.gecode(roadAddr);
+			oneList.add(p);
+			oneList.add(roadAddr);
+			oneList.add(geocode.get(0));
+			oneList.add(geocode.get(1));
+			allList.add(oneList);
+		}
+		cu.writeCSV(fileName, allList);
+		return null;
+	}
+	
 
 }
