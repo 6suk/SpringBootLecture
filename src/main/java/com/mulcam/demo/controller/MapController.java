@@ -28,20 +28,20 @@ import com.mulcam.demo.service.MapUtil;
 @Controller
 @RequestMapping("/map")
 public class MapController {
-	
+
 	@Value("${naver.accessId}")
 	private String accessId;
 	@Value("${naver.secretKey}")
 	private String secretKey;
-	
+
 	@GetMapping("/staticMap")
 	public String staticMapForm() {
 		return "map/staticForm";
 	}
-	
+
 	@Autowired
 	MapUtil mu = new MapUtil();
-	
+
 	@Autowired
 	CsvUtil cu = new CsvUtil();
 
@@ -115,7 +115,7 @@ public class MapController {
 		/** 응답 결과 확인 */
 		int resCode = conn.getResponseCode();
 		System.out.println(resCode);
-		
+
 		/** 데이터 수신 */
 		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
 		sb.setLength(0);
@@ -125,28 +125,26 @@ public class MapController {
 			sb.append(tmpStr);
 		}
 		br.close();
-		
+
 		JSONParser parser = new JSONParser();
 		JSONObject obj = (JSONObject) parser.parse(sb.toString());
 		JSONArray addresses = (JSONArray) obj.get("addresses");
 		JSONObject address = (JSONObject) addresses.get(0);
-		Double lng = Double.parseDouble((String)address.get("x"));
-		Double lat = Double.parseDouble((String)address.get("y"));
-		
+		Double lng = Double.parseDouble((String) address.get("x"));
+		Double lat = Double.parseDouble((String) address.get("y"));
+
 		return lng + " / " + lat;
 	}
-	
-	@GetMapping("/hp")
-	public String hotPlaces() throws Exception{
+
+	@RequestMapping("/hotplaces")
+	public String hotPlaces() throws Exception {
 		String[] hotPlaces = { "광진구청", "건국대학교", "세종대학교", "워커힐호텔" };
 		String fileName = "c:/Temp/광진구명소.csv";
-		
 		List<List<String>> allList = new ArrayList<>();
-		
-		for(String p : hotPlaces) {
+
+		for (String p : hotPlaces) {
 			List<String> oneList = new ArrayList<>();
 			String roadAddr = mu.getAddr(p);
-			System.out.println(roadAddr);
 			List<String> geocode = mu.gecode(roadAddr);
 			oneList.add(p);
 			oneList.add(roadAddr);
@@ -154,9 +152,37 @@ public class MapController {
 			oneList.add(geocode.get(1));
 			allList.add(oneList);
 		}
-		cu.writeCSV(fileName, allList);
-		return null;
+		cu.writeCSV(fileName, allList, "\t");
+		return "forward:/map/hotPlacesResult";
 	}
-	
+
+	@RequestMapping("/hotPlacesResult")
+	public String hotPlacesResult(Model model) {
+		StringBuilder sb = new StringBuilder();
+		List<List<String>> dataList = cu.readCsv("c:/Temp/광진구명소.csv", "\t");
+		double lngSum = 0.0, latSum = 0.0;
+
+		/** Marker */
+		for (List<String> list : dataList) {
+			double lng = Double.parseDouble(list.get(2));
+			double lat = Double.parseDouble(list.get(3));
+			lngSum += lng;
+			latSum += lat;
+			sb.append("&markers=type:t|size:tiny|pos:").append(lng + " " + lat).append("|label:").append(list.get(0));
+		}
+		String marker = sb.toString();
+		sb.setLength(0);
+
+		double lngCenter = lngSum / dataList.size();
+		double latCenter = latSum / dataList.size();
+
+		sb.append("https://naveropenapi.apigw.ntruss.com/map-static/v2/raster").append("?w=" + 600).append("&h=" + 400)
+				.append("&center=" + lngCenter + "," + latCenter).append("&level=" + 12).append("&scale=" + 2)
+				.append(marker).append("&X-NCP-APIGW-API-KEY-ID=" + accessId)
+				.append("&X-NCP-APIGW-API-KEY=" + secretKey);
+
+		model.addAttribute("url", sb.toString());
+		return "map/staticResult";
+	}
 
 }

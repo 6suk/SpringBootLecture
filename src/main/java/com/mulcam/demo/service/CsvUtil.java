@@ -62,7 +62,8 @@ public class CsvUtil {
 		BufferedWriter bw = null;
 
 		try {
-			bw = new BufferedWriter(new FileWriter(csv, true));
+//			bw = new BufferedWriter(new FileWriter(csv, true));
+			bw = new BufferedWriter(new FileWriter(csv));
 			for (List<String> data : dataList) {
 				StringBuilder sb = new StringBuilder();
 				data.forEach(x -> sb.append(x).append(separator));
