@@ -3,20 +3,26 @@ package com.mulcam.demo.controller;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
 @RequestMapping("/detect")
@@ -27,13 +33,23 @@ public class DetectController {
 	@Value("${naver.secretKey}")
 	private String secretKey;
 
-	@SuppressWarnings("unused")
 	@GetMapping("/naver")
-	public String naver(Model model) throws Exception {
+	public String naverForm() {
+		return "detect/naverResult";
+	}
+
+	@SuppressWarnings("unused")
+	@PostMapping("/naver")
+	public String naver(Model model, @RequestParam("file") MultipartFile file) throws Exception {
+		String now = LocalDateTime.now().toString().substring(0, 22).replaceAll("[-T:.]", "");
+		int idx = file.getOriginalFilename().lastIndexOf(".");
+		String newFileName = now + file.getOriginalFilename().substring(idx);
+
+		File uploadFile = new File("d:/springTemp/03/" + newFileName);
+		file.transferTo(uploadFile);
 		StringBuffer sb = new StringBuffer();
 
 		String paramName = "image";
-		File uploadFile = new File("d:/springTemp/02/yolo.jpg");
 		String apiURL = "https://naveropenapi.apigw.ntruss.com/vision-obj/v1/detect"; // 객체 인식
 
 		URL url = new URL(apiURL);
@@ -74,7 +90,7 @@ public class DetectController {
 		writer.close();
 
 		BufferedReader br = null;
-		int responseCode = con.getResponseCode();	// 결과 코드
+		int responseCode = con.getResponseCode(); // 결과 코드
 		if (responseCode == 200) { // 정상 호출
 			br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		} else { // 오류 발생

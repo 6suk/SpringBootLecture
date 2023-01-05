@@ -12,6 +12,11 @@
 <body style="margin: 40px">
 	<h3>객체 탐지 결과</h3>
 	<hr />
+	<form action="/detect/naver" method="post" enctype="multipart/form-data">
+		<input style="border: 1px solid #d1d1d1;" class="board-input"
+			type="file" name="file" />
+		<input type="submit" value="제출" />
+	</form>
 	<canvas id="tcanvas" width="100" height="100"></canvas>
 
 	<script>
