@@ -40,10 +40,10 @@ public class MapController {
 	}
 
 	@Autowired
-	MapUtil mu = new MapUtil();
+	MapUtil mu;
 
 	@Autowired
-	CsvUtil cu = new CsvUtil();
+	CsvUtil cu;
 
 	@PostMapping("/staticMap")
 	public String staticMap(StaticMap map, Model model) {
