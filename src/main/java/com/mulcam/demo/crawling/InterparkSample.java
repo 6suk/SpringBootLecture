@@ -8,14 +8,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class CrawlExercise {
+public class InterparkSample {
 	public static void main(String[] args) throws Exception {
 		String url = "http://book.interpark.com/display/collectlist.do?_method=BestsellerHourNew201605&bestTp=1&dispNo=028#";
 		Document doc = Jsoup.connect(url).get();
 		Elements lis = doc.select(".rankBestContentList > ol > li");
 		
-		/*
-		 * 
+		System.out.println(doc);
+		
+		
 		Element li = lis.get(8);
 		
 		String title = li.select(".itemName").text().strip();

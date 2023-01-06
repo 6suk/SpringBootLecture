@@ -23,5 +23,13 @@ public class CrawlingController {
 		return "crawling/interpark";
 	}
 	
+	@RequestMapping("/genie")
+	public String genie(Model model) throws IOException {
+		List<Genie> list = cr.genie();
+		model.addAttribute("list", list);
+		
+		return "crawling/genie";
+	}
+	
 	
 }
