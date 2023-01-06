@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -40,13 +41,14 @@ public class DetectController {
 
 	@SuppressWarnings("unused")
 	@PostMapping("/naver")
-	public String naver(Model model, @RequestParam("file") MultipartFile file) throws Exception {
+	public String naver(Model model, MultipartFile file) throws Exception {
 		String now = LocalDateTime.now().toString().substring(0, 22).replaceAll("[-T:.]", "");
 		int idx = file.getOriginalFilename().lastIndexOf(".");
 		String newFileName = now + file.getOriginalFilename().substring(idx);
 
-		File uploadFile = new File("d:/springTemp/03/" + newFileName);
+		File uploadFile = new File("d:/springTemp/02/" + newFileName);
 		file.transferTo(uploadFile);
+		
 		StringBuffer sb = new StringBuffer();
 
 		String paramName = "image";
