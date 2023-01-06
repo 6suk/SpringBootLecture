@@ -16,7 +16,7 @@ public class InterparkSample {
 		
 		System.out.println(doc);
 		
-		
+		/*
 		Element li = lis.get(8);
 		
 		String title = li.select(".itemName").text().strip();

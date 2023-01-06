@@ -9,10 +9,73 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Crawling {
+	
+	@Value("${web.driver.id}")
+	private String webDriverId;
+	@Value("${web.driver.path}")
+	private String webDriverPath;
+
+	public List<FireStation> fireStation() throws InterruptedException {
+		// Driver Setup
+		System.setProperty(webDriverId, webDriverPath);
+		
+		//창 띄우지 않기
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("headless");
+		WebDriver dv = new ChromeDriver(options);
+		
+		String url = "https://www.nfa.go.kr/nfa/introduce/status/firestationidfo";
+		dv.get(url);
+		Thread.sleep(3000); // 3초지연
+
+		/** 지역 선택 */
+		WebElement inputBox = dv.findElement(By.cssSelector("#searchKeyword"));
+		inputBox.sendKeys("서울");
+		WebElement searchBtn = dv.findElement(By.cssSelector("#fsSearchBtn"));
+		searchBtn.click();
+
+		Thread.sleep(2000); // 1초지연
+
+		/** 총 페이지수 구하기 */
+		// *[@id="listForm"]/div/section/div/p/strong
+		String xPath = "//*[@id=\"listForm\"]/div/section/div/p/strong[2]";
+		String num_ = dv.findElement(By.xpath(xPath)).getText().strip();
+		int num = Integer.parseInt(num_.substring(0, num_.length() - 1));
+		int pages = (int) Math.ceil(num / 10);
+
+		List<FireStation> list = new ArrayList<>();
+		for (int i = 1; i <= pages; i++) {
+			if (i > 1 && i % 2 == 0) {
+				dv.findElement(By.xpath("//*[@id=\"listForm\"]/div/section/ul/li[1]/div/div/ul/li[4]/a")).click();
+				Thread.sleep(1000);
+			} else if (i > 1 && i % 2 == 1) {
+				dv.findElement(By.cssSelector(".next_page")).click();
+				Thread.sleep(1000);
+			}
+
+			Document doc = Jsoup.parse(dv.getPageSource());
+			Elements lis = doc.select(".stations-list > li");
+			for (Element li : lis) {
+				String name = li.select(".title").text().strip();
+				String addr = li.select("address").text().strip();
+				String tel = li.select(".tel").text().strip();
+				FireStation fs = new FireStation(name, addr, tel);
+				list.add(fs);
+			}
+		}
+		dv.quit();
+		return list;
+	}
 
 	public List<Genie> genie() throws IOException {
 		List<Genie> list = new ArrayList<>();
@@ -42,6 +105,7 @@ public class Crawling {
 		String url = "http://book.interpark.com/display/collectlist.do?_method=BestsellerHourNew201605&bestTp=1&dispNo=028#";
 		Document doc = Jsoup.connect(url).get();
 		Elements lis = doc.select(".rankBestContentList > ol > li");
+		
 
 		for (Element li : lis) {
 			// 순위
